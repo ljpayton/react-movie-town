@@ -33,6 +33,5 @@ const User = {
 
 export default {
   Movie,
-  User,
-  services
+  User
 };

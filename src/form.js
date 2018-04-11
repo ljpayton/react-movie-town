@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Services from "./services";
+import services from "./services";
 
 import {
   Button,
@@ -16,7 +16,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: "LOGIN", payload: services.User.login(email, password) })
 });
 
-class Login extends Component {
+export default class Login extends Component {
   state = {
     email: "",
     password: ""

@@ -1,11 +1,14 @@
 import React from "react";
 import { Grid, Row, Col, Thumbnail, Button, Clearfix } from "react-bootstrap";
+import { connect } from "react-redux";
 
+const mapStateToProps = state => ({
+  movies: state.common.movies
+});
 const MovieList = ({ movies, onClickDetails }) => {
   // these two lines do the same as above
   //const MovieCardItem = props => {
   // let movies = props.movies;
-
   return (
     <Row>
       {movies.map((movie, idx) => (
@@ -32,4 +35,4 @@ const MovieList = ({ movies, onClickDetails }) => {
     </Row>
   );
 };
-export default connect(mapStateToProps)(MoviePosterList);
+export default connect(mapStateToProps)(MovieList);

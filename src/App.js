@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link, Route, withRouter } from "react-router-dom";
 import logo from "./logo.svg";
-import Services from "./services";
+import services from "./services";
 
 import css from "/Users/lyricpayton/Desktop/react-movie-town/src/App.css";
 import MovieDetail from "/Users/lyricpayton/Desktop/react-movie-town/src/movieDetail.js";
