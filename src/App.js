@@ -1,74 +1,118 @@
 import React, { Component } from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { Link, Route, withRouter } from "react-router-dom";
 import logo from "./logo.svg";
-import "./App.css";
+import Services from "./services";
 
-import { Grid, Navbar, Jumbotron, Button } from "react-bootstrap";
-import Example from "./components/Example";
+import css from "/Users/lyricpayton/Desktop/react-movie-town/src/App.css";
+import MovieDetail from "/Users/lyricpayton/Desktop/react-movie-town/src/movieDetail.js";
+import Movies from "./Movies";
 
-const MOVIE_URL =
-  "https://api.themoviedb.org/3/search/movie?api_key=2434d246ec60c162a86db597467ef4ed&language=en-US&query=hiphop&include_adult=false&sort_by=created_at.asc&page=1";
+import MovieList from "./MovieList";
+import Search from "/Users/lyricpayton/Desktop/react-movie-town/src/search.js";
+import index from "./index";
+import Login from "./form";
+import {
+  Grid,
+  Navbar,
+  Button,
+  Jumbotron,
+  Thumbnail,
+  Row,
+  Col,
+  Clearfix,
+  PageHeader,
+  FormGroup,
+  FormControl
+} from "react-bootstrap";
 
-let SomeComponent = props => <h1>{props.message}</h1>;
+const mapStateToProps = state => ({
+  searchTerm: state.common.searchTerm,
+  user: state.common.user,
+  userAuthenticated: state.common.isAuthenticated
+});
+
+const mapDispatchToProps = dispatch => ({
+  setSearchTerm: term => dispatch({ type: "CREATE_SEARCH_TERM", payload: term })
+});
 
 class App extends Component {
   state = {
-    movies: []
+    searchTermURI: ""
   };
-  componentDidMount() {
-    console.log(this.props);
-    fetch(MOVIE_URL)
-      .then(response => response.json())
-      .then(payload =>
-        this.setState({
-          movies: payload.results
-        })
-      )
-      .catch(err => console.log(err));
+  componentWillReceiveProps(nextProps) {
+    //reset search term for a new clean search
+    if (nextProps.location.pathname === "/") {
+      this.props.setSearchTerm("");
+    }
   }
-  render() {
-    let movies = this.state.movies.map(movie => {
-      let base_url = "https://image.tmdb.org/t/p/w500/";
-      return (
-        <div>
-          <h3>{movie.title}</h3>
-          <img style={{ width: "150px" }} src={base_url + movie.poster_path} />
-        </div>
-      );
-    });
+  movieSearchTerm = searchTerm => {
+    this.props.setSearchTerm(searchTerm);
+    this.props.history.push("/movies");
+  };
+  movieSignUp = event => {
+    event.history.push("/form");
+  };
 
+  render() {
     return (
       <div>
-        <Navbar inverse fixedTop>
-          <Grid>
-            <Navbar.Header>
-              <Navbar.Brand>
-                <a href="/">React App</a>
-              </Navbar.Brand>
-              <Navbar.Toggle />
-            </Navbar.Header>
-          </Grid>
+        <Navbar inverse top>
+          <PageHeader style={{ color: "red" }}>
+            Welcome !
+            <small>
+              "Don't be bored when you can watch unlimited movies in Movie Town"
+            </small>
+          </PageHeader>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <a href="/">Home</a>
+              <a href="/Users/lyricpayton/Desktop/react-movie-town/src/movieDetail.js">
+                Movie Details
+              </a>
+              <Link to="/movies"> Movies </Link>
+              <LinkContainer to="/form">
+                <Button type="submit" onClick={() => this.movieSignUp()}>
+                  Login
+                </Button>
+              </LinkContainer>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <input
+              placeholder="movie search"
+              type="text"
+              ref={input => (this.input = input)}
+            />
+            <br />
+            <Button
+              onClick={() => this.props.movieSearchTerm(this.input.value)}
+            >
+              Find Movie
+            </Button>
+            <Navbar.Form />
+          </Navbar.Collapse>
         </Navbar>
-        <Jumbotron>
-          <Grid>
-            <h1>Welcome to React</h1>
-            <p>
-              <Button
-                bsStyle="success"
-                bsSize="large"
-                href="http://react-bootstrap.github.io/components.html"
-                target="_blank"
-              >
-                View React Bootstrap Docs
-              </Button>
-            </p>
-          </Grid>
-          <Grid>{movies}</Grid>
-          <SomeComponent message={"Hello"} />
-          <Example />
-        </Jumbotron>
+        <h1>{this.state.searchTermURI} Movie</h1>
+        <Route
+          exact
+          path="/"
+          render={props => (
+            <Search {...props} movieSearchTerm={this.movieSearchTerm} />
+          )}
+        />
+        <Route
+          exact
+          path="/movies"
+          render={props => (
+            <Movies {...props} searchTermURI={this.state.searchTermURI} />
+          )}
+        />
+        <Route path="/form" component={Login} />
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
